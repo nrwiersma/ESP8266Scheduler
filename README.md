@@ -56,6 +56,9 @@ private:
 
 **IMPORTANT: Tasks must be declared globally on the stack (not a pointer). Failure to do so will crash your device.**
 
+Tasks can run ```yield``` and ```delay``` like they normally would. These functions yield control to the scheduler
+rather than the ESP8266.
+
 ### Advanced Task Functions
 
 The ```Task``` also exposes a ```bool shouldRun()``` method that is used determine if the task loop
