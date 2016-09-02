@@ -1,0 +1,13 @@
+{
+  "name": "ESP8266Scheduler",
+  "keywords": "multitasking",
+  "description": "ESP8266 Co-operative Multitasking",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/nrwiersma/ESP8266Scheduler.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "espressif",
+  "version": "0.1"
+}
