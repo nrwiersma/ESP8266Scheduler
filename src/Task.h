@@ -33,9 +33,10 @@ protected:
     }
 
     virtual bool shouldRun() {
-        unsigned long now = millis();
-
+        if (!delay_ms) return true;
+        
         // This comparison is "rollover safe"
+        unsigned long now = millis();        
         if ((now - delay_start) >= delay_ms)
             delay_ms = 0;
         
