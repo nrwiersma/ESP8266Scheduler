@@ -36,7 +36,10 @@ protected:
         unsigned long now = millis();
 
         // This comparison is "rollover safe"
-        return (now - delay_start) >= delay_ms; 
+        if ((now - delay_start) >= delay_ms)
+            delay_ms = 0;
+        
+        return !delay_ms;
     }
 
 private:
