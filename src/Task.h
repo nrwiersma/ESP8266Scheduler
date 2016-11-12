@@ -20,10 +20,8 @@ protected:
     virtual void loop() {}
 
     void delay(unsigned long ms) {
-        if (ms) {
-            delay_time = millis();
-            delay_ms = ms;
-        }
+        if (ms)
+            delay_done_ms = millis() + ms;
 
         yield();
     }
@@ -33,9 +31,7 @@ protected:
     }
 
     virtual bool shouldRun() {
-        unsigned long now = millis();
-
-        return !delay_ms || now >= delay_time + delay_ms;
+        return (millis() >= delay_done_ms);
     }
 
 private:
@@ -47,8 +43,7 @@ private:
     cont_t context;
 
     bool setup_done = false;
-    unsigned long delay_time;
-    unsigned long delay_ms;
+    unsigned long delay_done_ms = 1;
 
     void loopWrapper() {
         if (!setup_done) {
