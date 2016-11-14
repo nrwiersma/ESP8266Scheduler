@@ -1,7 +1,6 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-// #include <Arduino.h>
 #include "Task.h"
 
 extern "C" void loop();

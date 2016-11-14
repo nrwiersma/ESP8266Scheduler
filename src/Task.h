@@ -1,7 +1,7 @@
 #ifndef TASK_H
 #define TASK_H
 
-#include <Arduino.h>
+#include "Delay.h"
 
 extern "C" {
     #include "cont.h"
@@ -16,13 +16,10 @@ public:
 protected:
     virtual void setup() {}
 
-    virtual bool loop() {}
+    virtual bool loop() { return true; }
 
-    void delay(unsigned long ms) {
-        if (ms) {
-            delay_start = millis();
-            delay_ms = ms;
-        }
+    void delay(uint32_t ms) {
+        delay_info.set(ms);
 
         yield();
     }
@@ -31,26 +28,10 @@ protected:
         cont_yield(&context);
     }
 
-	inline bool isDelayed() {
-		return (delay_ms != 0);
-	}
-
-	void updateDelayTimer() {
-        // Optimize for the non-delayed case
-		if (delay_ms == 0) return;
-
-		// This comparison is "rollover safe"
-        unsigned long now = millis();
-        if ((now - delay_start) >= delay_ms) {
-			delay_ms = 0;
-        }
-	}
-
     virtual bool shouldRun() {
-		// Tasks update their own delay timer
-		updateDelayTimer();
-
-		if (isDelayed()) return false;
+		if (delay_info.update(millis())) {
+            return false;
+        }
 
         if (!run_group_active) return false;
 
@@ -68,11 +49,10 @@ private:
     Task *prev;
     cont_t context;
 
-    bool loop_complete = false;
+    Delay delay_info;
 
     bool setup_done = false;
-    unsigned long delay_start = 0;
-    unsigned long delay_ms = 0;
+    bool loop_complete = false;
 
     void loopWrapper() {
         if (!setup_done) {
@@ -81,7 +61,7 @@ private:
         }
 
         while(1) {
-            this->loop_complete = loop();
+            loop_complete = loop();
             yield();
         }
     }
