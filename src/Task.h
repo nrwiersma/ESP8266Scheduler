@@ -2,7 +2,6 @@
 #define TASK_H
 
 #include <Arduino.h>
-//#include "Scheduler.h"
 
 extern "C" {
     #include "cont.h"
@@ -17,7 +16,7 @@ public:
 protected:
     virtual void setup() {}
 
-    virtual void loop() {}
+    virtual bool loop() {}
 
     void delay(unsigned long ms) {
         if (ms) {
@@ -37,27 +36,30 @@ protected:
 	}
 
 	void updateDelayTimer() {
-		if (delay_ms == 0) return;   // Optimize for the non-delayed case
+        // Optimize for the non-delayed case
+		if (delay_ms == 0) return;
 
 		// This comparison is "rollover safe"
         unsigned long now = millis();
-        if ((now - delay_start) >= delay_ms)
+        if ((now - delay_start) >= delay_ms) {
 			delay_ms = 0;
+        }
 	}
 
     virtual bool shouldRun() {
 		// Tasks update their own delay timer
 		updateDelayTimer();
+
 		if (isDelayed()) return false;
+
         if (!run_group_active) return false;
+
 		return !loop_complete;
 	}
 
     uint8_t current_cycle_id = 0;
     uint8_t run_group_id = 0xFF;
     bool run_group_active = false;
-	
-    bool loop_complete = false;
 private:
     friend class SchedulerClass;
     friend void task_tramponline();
@@ -66,6 +68,7 @@ private:
     Task *prev;
     cont_t context;
 
+    bool loop_complete = false;
 
     bool setup_done = false;
     unsigned long delay_start = 0;
@@ -78,7 +81,7 @@ private:
         }
 
         while(1) {
-            loop();
+            this->loop_complete = loop();
             yield();
         }
     }

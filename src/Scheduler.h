@@ -12,20 +12,18 @@ public:
     SchedulerClass();
 	inline static uint8_t getCurrentRunGroupID() { return scheduler_run_group_id; }
 	inline static uint8_t getCurrentCycleID() { return scheduler_cycle_id; }
-    inline static uint8_t countRunGroups() { 
+    inline static uint8_t countRunGroups() {
 	    return ((sizeof nActiveGroupsIdx) * 8); // The count of group ids is the number of bits in nActiveGroupsIdx
     }
     static void updateRunGroups();
     static void updateCurrentTask();
-	
+
     static void start(Task *task);
 
     static void begin();
 
 private:
     friend void task_tramponline();
-
-    // class MainTask : public Task {};
 
     static Task main;
     static Task *current;
