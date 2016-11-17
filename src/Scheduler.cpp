@@ -1,4 +1,5 @@
 #include "Scheduler.h"
+#include "RunGroups.h"
 
 extern "C" {
     #include "cont.h"
@@ -10,10 +11,6 @@ SchedulerClass Scheduler;
 
 Task SchedulerClass::main;
 Task *SchedulerClass::current = &SchedulerClass::main;
-uint8_t SchedulerClass::nActiveGroupsIdx = 0;
-uint8_t SchedulerClass::nActiveTasks = 0;
-uint8_t SchedulerClass::scheduler_cycle_id = 0;
-uint8_t SchedulerClass::scheduler_run_group_id = 0;
 
 SchedulerClass::SchedulerClass() {
     main.next = &main;
@@ -21,82 +18,53 @@ SchedulerClass::SchedulerClass() {
 }
 
 void SchedulerClass::start(Task *task) {
+    SchedulerClass::start(task, 0xFF);
+}
+
+void SchedulerClass::start(Task *task, uint8_t run_group_id) {
     task->next = &main;
     task->prev = main.prev;
+    task->run_group_info.id = run_group_id;
 
     main.prev->next = task;
     main.prev = task;
 }
 
-void SchedulerClass::updateCurrentTask() {
-	// This update runs before the call to shouldRun
-	uint8_t task_run_group_id = current->run_group_id;
-
-	// First, check the cycle_id
-	if ( current->current_cycle_id != scheduler_cycle_id ) {
-        // If the Task's cycle_id doesn't match; reset loop_complete and set the current cycle_id
-        if (task_run_group_id != 0xFF) current->loop_complete = false;
-        current->current_cycle_id = scheduler_cycle_id;
-	}
-
-	// Next, update the Task's run_group_active flag
-	// If this Task's run_group_id == 0xFF; run_group_active is true
-    current->run_group_active = (task_run_group_id == 0xFF) || (task_run_group_id == scheduler_run_group_id);
-}
-
-void SchedulerClass::updateRunGroups() {
-	// This is called after the Task had a chance to run; updateCurrentTask() reset loop_complete and cycle_id if required
-	// and if part of the currently active run_group, loop() could have set loop_complete
-
-    // First, update the corresponding ActiveRunGroup bits
-	uint8_t task_run_group_id = current->run_group_id;
-
-	// Mark the group bit idx as an active group
-	nActiveGroupsIdx |= (1 << task_run_group_id);  // This is cumulative, so any Task in the Group will set the bit
-
-	// If this Task is !loop_complete and also part of the current run_group, increment nActiveTasks; this group_id isn't done yet
-	if (!current->loop_complete && scheduler_run_group_id == task_run_group_id) nActiveTasks++;
-
-	// Then, if a full loop through all the Tasks completed; update the run_group state
-	if (current->next == &main) {
-
-		// If there were no GroupActiveTasks found (all loop_completed == false) for this group_id, move to the next group_id
-		if (nActiveTasks == 0) {
-			uint8_t nGroups = countRunGroups();
-
-			scheduler_run_group_id = (scheduler_run_group_id + 1) % nGroups;
-			if (scheduler_run_group_id == 0) scheduler_cycle_id++;        // If group_id wrapped back to 0; a cycle completed
-
-			// nActiveGroupsIdx is a bit flag array for Group IDs with Tasks assigned to them
-			uint8_t nIncs = 0; //Infinite Loop Protector
-			while ( /*nActiveGroupsIdx != 0 && */(nActiveGroupsIdx & (1 << scheduler_run_group_id)) == 0 ) {
-				scheduler_run_group_id = (scheduler_run_group_id + 1) % nGroups;
-				if (scheduler_run_group_id == 0) scheduler_cycle_id++;    // If group_id wraps back to 0; the cycle completed
-				nIncs++;
-				if (nIncs >= nGroups - 1) break; // If the counter has Incremented a full rotation; stop.
-			}
-
-		}
-
-		nActiveTasks = 0;  		// reset count of GroupActiveTasks
-		nActiveGroupsIdx = 0;	// reset indeces of ActiveGroups
-	}
-}
-
 void SchedulerClass::begin() {
-    while (1) {
-		updateCurrentTask();
+    // We start on main, so we need to do a full run through
+    int tasksRun = 1;
 
-		if(current->shouldRun()) {
+    while (1) {
+		if(canSchedule(current)) {
             cont_run(&current->context, task_tramponline);
+
+            // If we have run a non-default task, increment the task count
+            if (!RunGroups::defaultGroup(current->run_group_info)) {
+                tasksRun++;
+            }
         }
 
-		updateRunGroups();
+        // When we have hit main, we can reasonably check to update the run group id
+        if (current == &main) {
+            if (tasksRun == 0) {
+                RunGroups::next();
+            }
+
+            tasksRun = 0;
+        }
 
         yield();
 
         current = current->next;
     }
+}
+
+bool SchedulerClass::canSchedule(Task *task) {
+    // If we are delayed, don't run
+    if (task->delay_info.update(millis())) return false;
+
+    // Otherwise run if the RunGroup allows it
+    return RunGroups::current(task->run_group_info);
 }
 
 void task_tramponline() {

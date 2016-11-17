@@ -2,6 +2,7 @@
 #define TASK_H
 
 #include "Delay.h"
+#include "RunGroups.h"
 
 extern "C" {
     #include "cont.h"
@@ -29,18 +30,8 @@ protected:
     }
 
     virtual bool shouldRun() {
-		if (delay_info.update(millis())) {
-            return false;
-        }
-
-        if (!run_group_active) return false;
-
-		return !loop_complete;
+		return true;
 	}
-
-    uint8_t current_cycle_id = 0;
-    uint8_t run_group_id = 0xFF;
-    bool run_group_active = false;
 private:
     friend class SchedulerClass;
     friend void task_tramponline();
@@ -49,10 +40,10 @@ private:
     Task *prev;
     cont_t context;
 
-    Delay delay_info;
-
     bool setup_done = false;
-    bool loop_complete = false;
+
+    Delay delay_info;
+    RunGroupInfo run_group_info;
 
     void loopWrapper() {
         if (!setup_done) {
@@ -61,7 +52,13 @@ private:
         }
 
         while(1) {
-            loop_complete = loop();
+            if (shouldRun()) {
+                run_group_info.complete = loop();
+            } else {
+                // We are not ready, give the other run groups a turn.
+                run_group_info.complete = true;
+            }
+
             yield();
         }
     }
