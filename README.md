@@ -1,6 +1,4 @@
-# ESP8266Scheduler
-
-ESP8266 Co-operative Multitasking
+![Logo](http://svg.wiersma.co.za/github/project?lang=cpp&title=ESP8266Scheduler&tag=co-operative%20multitasking)
 
 # Quick Start
 
