@@ -7,13 +7,13 @@
 #######################################
 
 Scheduler	KEYWORD1
-Task        KEYWORD1
+Task	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-start       KEYWORD2
-begin       KEYWORD2
+start	KEYWORD2
+begin	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
