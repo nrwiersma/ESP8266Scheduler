@@ -57,6 +57,8 @@ private:
 Tasks can run ```yield``` and ```delay``` like they normally would. These functions yield control to the scheduler
 rather than the ESP8266.
 
+**IMPORTANT: Each task consumes 4kb of ram.**
+
 ### Advanced Task Functions
 
 The ```Task``` also exposes a ```bool shouldRun()``` method that is used determine if the task loop
@@ -74,6 +76,36 @@ bool shouldRun() {
 
 **This function handles the ```delay()``` logic. The parent method should be called.**
 
+# Creating a LeanTask
+
+A ```LeanTask``` runs in the global context, so calling ```delay()```  inside one blocks execution for all tasks. The advantage of lean tasks is that they consume no extra RAM, so you can add as many as you wish.
+LeanTasks can run ```schedule(ms);``` to indicate to the scheduler, that the next iteration of their loop function should not run for the next `ms` milliseconds.
+
+If you have a ```Task``` that uses one single call to `delay(ms)` at the end of the loop, you can save 4k of ram by declaring it as a ```LeanTask``` instead and replacing `delay(ms)` with `schedule(ms)` call.
+
+```cpp
+class BlinkTask : public LeanTask {
+protected:
+    void setup() {
+        state = HIGH;
+
+        pinMode(2, OUTPUT);
+        pinMode(2, state);
+    }
+
+    void loop() {
+        state = state == HIGH ? LOW : HIGH;
+        pinMode(2, state);
+
+        schedule(1000);
+    }
+
+private:
+    uint8_t state;
+} blink_task;
+```
+
+
 # Documentation
 
 ## Methods
@@ -81,6 +113,7 @@ bool shouldRun() {
 ### start
 ```
 static void start(Task *task)
+static void start(LeanTask *leanTask)
 ```
 > Adds a task to the multitasking queue.
 
