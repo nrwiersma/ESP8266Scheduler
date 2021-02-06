@@ -67,7 +67,7 @@ class LeanTask : public ITask {
 
  private:
   bool setup_done;
-  virtual void resume() {
+  void resume() {
     if (!setup_done) {
       setup();
       setup_done = true;
