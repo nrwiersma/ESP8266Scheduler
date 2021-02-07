@@ -8,24 +8,20 @@ void yield();
 
 SchedulerClass Scheduler;
 
-Task SchedulerClass::main;
-Task* SchedulerClass::current = &SchedulerClass::main;
+Task* SchedulerClass::first = NULL;
+Task* SchedulerClass::current = NULL;
 uint8_t SchedulerClass::nActiveGroupsIdx = 0;
 uint8_t SchedulerClass::nActiveTasks = 0;
 uint8_t SchedulerClass::scheduler_cycle_id = 0;
 uint8_t SchedulerClass::scheduler_run_group_id = 0;
 
-SchedulerClass::SchedulerClass() {
-  main.next = &main;
-  main.prev = &main;
-}
+SchedulerClass::SchedulerClass() {}
 
 void SchedulerClass::start(Task* task) {
-  task->next = &main;
-  task->prev = main.prev;
-
-  main.prev->next = task;
-  main.prev = task;
+  if (!first)
+    first = current = task;
+  else
+    current = current->next = task;
 }
 
 void SchedulerClass::updateCurrentTask() {
@@ -67,7 +63,7 @@ void SchedulerClass::updateRunGroups() {
 
   // Then, if a full loop through all the Tasks completed; update the run_group
   // state
-  if (current->next == &main) {
+  if (current->next == first) {
     // If there were no GroupActiveTasks found (all loop_completed == false) for
     // this group_id, move to the next group_id
     if (nActiveTasks == 0) {
@@ -98,6 +94,7 @@ void SchedulerClass::updateRunGroups() {
 }
 
 void SchedulerClass::begin() {
+  current = current->next = first;
   while (1) {
     updateCurrentTask();
 
