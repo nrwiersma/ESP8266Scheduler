@@ -28,7 +28,7 @@ class SchedulerClass {
  private:
   friend void task_tramponline();
 
-  static Task main;
+  static Task* first;
   static Task* current;
 
   static uint8_t nActiveGroupsIdx;

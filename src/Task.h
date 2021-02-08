@@ -61,7 +61,6 @@ class Task {
   friend void task_tramponline();
 
   Task* next;
-  Task* prev;
   cont_t context;
 
   bool setup_done = false;
