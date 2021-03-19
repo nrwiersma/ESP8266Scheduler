@@ -37,12 +37,12 @@ protected:
         state = HIGH;
 
         pinMode(2, OUTPUT);
-        pinMode(2, state);
+        digitalWrite(2, state);
     }
 
     void loop() {
         state = state == HIGH ? LOW : HIGH;
-        pinMode(2, state);
+        digitalWrite(2, state);
 
         delay(1000);
     }
