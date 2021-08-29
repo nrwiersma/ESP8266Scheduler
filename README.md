@@ -1,5 +1,8 @@
 ![Logo](http://svg.wiersma.co.za/github/project?lang=cpp&title=ESP8266Scheduler&tag=co-operative%20multitasking)
 
+[![Build Status](https://github.com/nrwiersma/ESP8266Scheduler/actions/workflows/test.yml/badge.svg)](https://github.com/nrwiersma/ESP8266Scheduler/actions)
+[![arduino-library-badge](http://www.ardu-badge.com/badge/ESP8266Scheduler.svg)](http://www.ardu-badge.com/ESP8266Scheduler)
+
 # Quick Start
 
 ## Installing
