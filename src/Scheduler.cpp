@@ -103,10 +103,18 @@ void SchedulerClass::begin() {
 
     updateRunGroups();
 
-    yield();
+    ::yield();
 
     current = current->next;
   }
+}
+
+void SchedulerClass::delay(unsigned long ms) {
+  current->delay(ms);
+}
+
+void SchedulerClass::yield() {
+  current->yield();
 }
 
 void task_tramponline() {
