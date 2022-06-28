@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Scheduler.h>
+#include <Task.h>
 
 class PrintTask : public Task {
 protected:
