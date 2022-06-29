@@ -114,8 +114,6 @@ All examples have the same logic. To optimize RAM, use ```LeanTask``` (if possib
 | [simple.ino](examples/simple/simple.ino) | 3 Task | 39896 bytes |
 | [lean_simple.ino](examples/lean_simple/lean_simple.ino) | 1 Task, 2 LeanTask | 48168 bytes |
 | [subfile_simple.ino](examples/subfile_simple/subfile_simple.ino) | 1 Task, 2 LeanTask + main loop | 48136 bytes |
-| [heap_test.ino](examples/heap_test/heap_test.ino) | 12 Task + main loop <sub>(TASK_TYPE = Task)</sub> | 2280 bytes |
-| [heap_test.ino](examples/heap_test/heap_test.ino) | 12 LeanTask + main loop <sub>(TASK_TYPE = LeanTask)</sub> | 51912 bytes |
 
 [heap_test.ino](examples/heap_test/heap_test.ino):
 | TASK_TYPE | Description | Free heap (more is better) |
