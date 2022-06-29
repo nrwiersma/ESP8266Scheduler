@@ -107,7 +107,6 @@ class PrintTask : public LeanTask {
 
 Tasks can run ```yield()``` and ```delay()``` like they normally would. The ```yield()``` function transfer control to the ESP8266, NOT the scheduler. The ```delay()``` function will tell the scheduler that a delay is needed before the next run. If you REALLY need a delay, use ```::delay()```, but this will block the task and the scheduler.
 
-<<<<<<< HEAD
 ## Tests using Task vs LeanTask
 All examples have the same logic. To optimize RAM, use ```LeanTask``` (if possible), because each instance of ```Task``` requires 4 kb of RAM.
 | File | Description | Free heap (more is better) |
@@ -128,13 +127,6 @@ All examples have the same logic. To optimize RAM, use ```LeanTask``` (if possib
 #### bool AbstractTask::isEnabled();
 Method return the status of the task: enabled (true) or disabled (false).
 
-=======
-
-## Task methods
-#### bool AbstractTask::isEnabled();
-Method return the status of the task: enabled (true) or disabled (false).
-
->>>>>>> 54dea6b0543e600326d095cb61dd35a76082ad96
 ---
 
 #### AbstractTask(bool _enabled = true, unsigned long _interval = 0);
