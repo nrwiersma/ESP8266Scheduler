@@ -15,7 +15,7 @@ uint8_t SchedulerClass::nActiveGroupsIdx = 0;
 uint8_t SchedulerClass::nActiveTasks = 0;
 uint8_t SchedulerClass::scheduler_cycle_id = 0;
 uint8_t SchedulerClass::scheduler_run_group_id = 0;
-bool SchedulerClass::mainLoopRunned = 0;
+bool SchedulerClass::mainLoopRunning = 0;
 
 SchedulerClass::SchedulerClass() {}
 
