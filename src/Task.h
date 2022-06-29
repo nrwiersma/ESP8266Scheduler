@@ -1,4 +1,5 @@
 #pragma once
+#include <Arduino.h>
 
 extern "C" {
 #include "cont.h"

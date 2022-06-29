@@ -112,9 +112,9 @@ void SchedulerClass::begin() {
     updateCurrentTask();
 
     if ( current == first ) {
-      mainLoopRunned = true;
+      mainLoopRunning = true;
       ::loop();
-      mainLoopRunned = false;
+      mainLoopRunning = false;
       ::yield();
     }
 
@@ -130,7 +130,7 @@ void SchedulerClass::begin() {
 }
 
 void SchedulerClass::delay(unsigned long ms) {
-  if ( mainLoopRunned ) {
+  if ( mainLoopRunning ) {
     return;
   }
 
@@ -138,7 +138,7 @@ void SchedulerClass::delay(unsigned long ms) {
 }
 
 void SchedulerClass::yield() {
-  if ( mainLoopRunned ) {
+  if ( mainLoopRunning ) {
     return;
   }
   
