@@ -33,7 +33,7 @@ class SchedulerClass {
   static uint8_t nActiveTasks;
   static uint8_t scheduler_cycle_id;
   static uint8_t scheduler_run_group_id;
-  static bool mainLoopRunned;
+  static bool mainLoopRunning;
 };
 
 extern SchedulerClass Scheduler;
