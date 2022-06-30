@@ -1,10 +1,7 @@
-#ifndef SCHEDULER_H
-#define SCHEDULER_H
-
-#include "Task.h"
+#pragma once
+#include "AbstractTask.h"
 
 extern "C" void loop();
-extern void task_tramponline();
 
 class SchedulerClass {
  public:
@@ -21,24 +18,22 @@ class SchedulerClass {
   static void updateRunGroups();
   static void updateCurrentTask();
 
-  static void start(Task* task);
+  static void start(AbstractTask* task);
 
   static void begin();
   static void delay(unsigned long ms);
   static void yield();
+  static void trampoline();
   
  private:
-  friend void task_tramponline();
-
-  static Task* first;
-  static Task* current;
+  static AbstractTask* first;
+  static AbstractTask* current;
 
   static uint8_t nActiveGroupsIdx;
   static uint8_t nActiveTasks;
   static uint8_t scheduler_cycle_id;
   static uint8_t scheduler_run_group_id;
+  static bool mainLoopRunning;
 };
 
 extern SchedulerClass Scheduler;
-
-#endif

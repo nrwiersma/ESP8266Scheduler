@@ -7,13 +7,17 @@
 #######################################
 
 Scheduler	KEYWORD1
+AbstractTask	KEYWORD1
 Task	KEYWORD1
+LeanTask	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 start	KEYWORD2
 begin	KEYWORD2
+delay	KEYWORD2
+yield	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
