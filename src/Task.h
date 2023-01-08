@@ -17,7 +17,7 @@ class Task : public AbstractTask {
   }
 
   void yield() override {
-    cont_yield(&context);
+    cont_suspend(&context);
   }
 
  private:
