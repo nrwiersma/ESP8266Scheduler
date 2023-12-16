@@ -17,6 +17,7 @@ class Task : public AbstractTask {
   }
 
   void yield() override {
+    ::yield();
     cont_suspend(&context);
   }
 
