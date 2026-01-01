@@ -3,6 +3,11 @@
 [![Build Status](https://github.com/nrwiersma/ESP8266Scheduler/actions/workflows/test.yml/badge.svg)](https://github.com/nrwiersma/ESP8266Scheduler/actions)
 [![arduino-library-badge](http://www.ardu-badge.com/badge/ESP8266Scheduler.svg)](http://www.ardu-badge.com/ESP8266Scheduler)
 
+> [!WARNING]
+> This project is no longer maintained.
+>
+> If you wish to update or extend, please do so in a fork.
+
 # Quick Start
 
 ## Installing
